@@ -100,15 +100,29 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "website",
+    "title": "Jaime Orrego",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+    "text": "I’m Jaime Orrego, a researcher in transport systems, accessibility, and sustainable urban mobility. I currently hold a Juan de la Cierva postdoctoral fellowship at the Universitat Autònoma de Barcelona and collaborate with the GEMOTT research group.\nMy work focuses on evaluating transport equity, behavioral modeling, and policy acceptability — using methods from spatial analysis to survey-based research. I’m especially interested in how urban form and public policy shape mobility decisions across diverse communities.\n\n\n\n\nAccessibility and travel behavior in metropolitan regions\nAcceptance of sustainable mobility policies (Barcelona, Santiago)\n\n\n\n\n\n\nAbout Me\nCV (optional if you have one)\nGitHub Projects\nEmail me"
+  },
+  {
+    "objectID": "index.html#current-focus",
+    "href": "index.html#current-focus",
+    "title": "Jaime Orrego",
+    "section": "",
+    "text": "Accessibility and travel behavior in metropolitan regions\nAcceptance of sustainable mobility policies (Barcelona, Santiago)"
+  },
+  {
+    "objectID": "index.html#explore-more",
+    "href": "index.html#explore-more",
+    "title": "Jaime Orrego",
+    "section": "",
+    "text": "About Me\nCV (optional if you have one)\nGitHub Projects\nEmail me"
   },
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "About",
+    "title": "About Me",
     "section": "",
-    "text": "About Me\nI am Jaime Orrego Oñate, a civil engineer specialized in transport systems, with a strong focus on accessibility, sustainable mobility, and urban policy. I hold a PhD in Civil and Environmental Engineering from Portland State University (USA), a Master’s in Transport Engineering from the Universidad de Chile, and currently work as a postdoctoral researcher at the Universitat Autònoma de Barcelona, supported by a Juan de la Cierva fellowship.\nOver the past decade, I have participated in various academic and applied research projects across Latin America, the United States, and Europe. My work bridges data-driven analysis with policy-relevant outcomes, aiming to understand how cities can foster equitable and low-carbon mobility systems. I collaborate closely with city governments, universities, and international networks to support decision-making in transport planning and accessibility evaluation.\nMy research combines spatial analysis, behavioral modeling, and policy evaluation, with a growing interest in public acceptability of sustainable mobility measures and the political dimensions of urban transformation.\nOutside of academia, I am passionate about contributing to better science governance and fostering international cooperation in research and policy."
+    "text": "I am Jaime Orrego Oñate, a civil engineer specialized in transport systems, with a strong focus on accessibility, sustainable mobility, and urban policy. I hold a PhD in Civil and Environmental Engineering from Portland State University (USA), a Master’s in Transport Engineering from the Universidad de Chile, and currently work as a postdoctoral researcher at the Universitat Autònoma de Barcelona, supported by a Juan de la Cierva fellowship.\nOver the past decade, I have participated in various academic and applied research projects across Latin America, the United States, and Europe. My work bridges data-driven analysis with policy-relevant outcomes, aiming to understand how cities can foster equitable and low-carbon mobility systems. I collaborate closely with city governments, universities, and international networks to support decision-making in transport planning and accessibility evaluation.\nMy research combines spatial analysis, behavioral modeling, and policy evaluation, with a growing interest in public acceptability of sustainable mobility measures and the political dimensions of urban transformation.\nOutside of academia, I am passionate about contributing to better science governance and fostering international cooperation in research and policy."
   }
 ]
