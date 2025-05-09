@@ -17,14 +17,13 @@ My work focuses on evaluating transport equity, behavioral modeling, and policy 
 
 - Accessibility and travel behavior in metropolitan regions
 - Acceptance of sustainable mobility policies (Barcelona, Santiago)
-- Adolescent mobility and inclusive urban planning (DUT-HANGOUT project)
 
 ---
 
 ## 📄 Explore More
 
 - [About Me](about.qmd)
-- [CV](cv.qmd) *(optional if you have one)*
+- [CV](cv.qmd)
 - [GitHub Projects](https://github.com/jaimeorrego)
 - [Email me](mailto:jaime.orrego@gmail.com)
 
