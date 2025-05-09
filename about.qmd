@@ -1,0 +1,13 @@
+---
+title: "About"
+---
+
+# About Me
+
+I am Jaime Orrego Oñate, a civil engineer specialized in transport systems, with a strong focus on accessibility, sustainable mobility, and urban policy. I hold a PhD in Civil and Environmental Engineering from Portland State University (USA), a Master’s in Transport Engineering from the Universidad de Chile, and currently work as a postdoctoral researcher at the Universitat Autònoma de Barcelona, supported by a Juan de la Cierva fellowship.
+
+Over the past decade, I have participated in various academic and applied research projects across Latin America, the United States, and Europe. My work bridges data-driven analysis with policy-relevant outcomes, aiming to understand how cities can foster equitable and low-carbon mobility systems. I collaborate closely with city governments, universities, and international networks to support decision-making in transport planning and accessibility evaluation.
+
+My research combines spatial analysis, behavioral modeling, and policy evaluation, with a growing interest in public acceptability of sustainable mobility measures and the political dimensions of urban transformation.
+
+Outside of academia, I am passionate about contributing to better science governance and fostering international cooperation in research and policy.
