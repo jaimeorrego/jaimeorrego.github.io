@@ -1,0 +1,30 @@
+---
+title: "Jaime Orrego"
+format:
+  html:
+    toc: false
+---
+
+# 👋 Welcome
+
+I’m Jaime Orrego, a researcher in transport systems, accessibility, and sustainable urban mobility. I currently hold a Juan de la Cierva postdoctoral fellowship at the Universitat Autònoma de Barcelona and collaborate with the GEMOTT research group.
+
+My work focuses on evaluating transport equity, behavioral modeling, and policy acceptability — using methods from spatial analysis to survey-based research. I’m especially interested in how urban form and public policy shape mobility decisions across diverse communities.
+
+------------------------------------------------------------------------
+
+## 🔍 Current Focus
+
+-   Accessibility and travel behavior in metropolitan regions
+-   Acceptance of sustainable mobility policies (Barcelona, Santiago)
+
+------------------------------------------------------------------------
+
+## 📄 Explore More
+
+-   [About Me](about.qmd)
+-   [CV](cv.qmd) *(optional if you have one)*
+-   [GitHub Projects](https://github.com/jaimeorrego)
+-   [Email me](mailto:jaime.orrego@gmail.com)
+
+------------------------------------------------------------------------
