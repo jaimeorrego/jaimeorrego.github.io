@@ -317,11 +317,8 @@ This model is the most comprehensive in our analysis. It combines:
 -   **Spatial lag** of the dependent variable\
 -   **Spatial correlation in the error term**
 
-In simpler terms, it accounts for the fact that:
-
--   A tract's vote share may be influenced by the vote share in **neighboring tracts**\
--   **Unobserved factors** that affect voting may also be **spatially clustered**
--   And each tract has its own stable, unchanging characteristics, plus all units are affected by **year-specific trends**
+In simpler terms, it accounts for the fact that: - A tract's vote share may be influenced by the vote share in **neighboring tracts**\
+- **Unobserved factors** that affect voting may also be **spatially clustered** - And each tract has its own stable, unchanging characteristics, plus all units are affected by **year-specific trends**
 
 ------------------------------------------------------------------------
 
@@ -439,3 +436,147 @@ print(model_summary_table)
 -   The effect is largest in the naive OLS model and shrinks in more rigorous specifications.
 -   The spatial panel SARAR model offers a **conservative and robust estimate**, suggesting the effect is real but modest after controlling for all spatial and fixed effects.
 -   This robustness across modeling strategies adds credibility to the finding.
+
+## Step 10: Model Summary Table with Spatial Parameters and Fit Statistics
+
+```{r}
+# Load required packages
+library(broom)
+library(dplyr)
+library(tidyr)
+library(gt)
+library(glue)
+
+# Define helper to format p-values safely (vectorized)
+format_p <- function(p) {
+  ifelse(
+    is.na(p),
+    "p = NA",
+    ifelse(p < 0.001, "p < 0.001", paste0("p = ", round(p, 3)))
+  )
+}
+
+####### COEFFICIENT TABLE #######
+
+# Get tidy output from all supported models
+tidy_all <- bind_rows(
+  tidy(mod_ols) %>% mutate(model = "OLS"),
+  tidy(mod_fe_tw) %>% mutate(model = "FE"),
+  tidy(mod_fd) %>% mutate(model = "FD"),
+  tidy(mod_sar) %>% mutate(model = "SAR"),
+  tidy(mod_sem) %>% mutate(model = "SEM"),
+  tidy(mod_sac) %>% mutate(model = "SAC")
+)
+
+# Standardize variable names and format p-values with line breaks
+tidy_all <- tidy_all %>%
+  mutate(term = term %>%
+           gsub("^factor\\(Year\\)", "Year", .) %>%
+           gsub("^Superblock1$", "Superblock", .) %>%
+           gsub("^d_Superblock$", "Superblock", .) %>%
+           gsub("^d_Income$", "Income", .) %>%
+           gsub("^d_Pop_den$", "Pop_den", .)) %>%
+  mutate(label = glue("{round(estimate, 4)}<br><span style='font-size: 85%; color: #666;'>{format_p(p.value)}</span>")) %>%
+  select(term, label, model)
+
+# Add SPML-SARAR model manually
+sarar_coefs <- coef(mod_spml_sarar)
+sarar_se <- sqrt(diag(vcov(mod_spml_sarar)))
+sarar_p <- 2 * (1 - pnorm(abs(sarar_coefs / sarar_se)))
+
+# Also apply to SPML model
+sarar_df <- tibble(
+  term = names(sarar_coefs),
+  estimate = sarar_coefs,
+  p.value = sarar_p
+) %>%
+  mutate(
+    term = term %>%
+      gsub("^factor\\(Year\\)", "Year", .) %>%
+      gsub("^Superblock1$", "Superblock", .),
+    label = glue("{round(estimate, 4)}<br><span style='font-size: 85%; color: #666;'>{format_p(p.value)}</span>"),
+    model = "SPML"
+  ) %>%
+  select(term, label, model)
+
+# Combine all models
+tidy_all <- bind_rows(tidy_all, sarar_df)
+
+# Pivot to wide format for display
+summary_wide <- tidy_all %>%
+  pivot_wider(names_from = model, values_from = label)
+
+# Display coefficient table
+summary_wide %>%
+  rename(Variable = term) %>%
+  gt() %>%
+  tab_header(title = "Model Coefficients with p-values")%>%
+  fmt_markdown(columns = everything()) 
+
+
+####### FIT STATISTICS TABLE #######
+
+# Collect fit metrics from each model
+fit_stats <- tibble(
+  Model = c("OLS", "FE", "FD", "SAR", "SEM", "SAC", "SPML"),
+  R2 = c(
+    summary(mod_ols)$r.squared,
+    summary(mod_fe_tw)$r.squared[["rsq"]],
+    summary(mod_fd)$r.squared,
+    NA, NA, NA, NA
+  ),
+  Adj_R2 = c(
+    summary(mod_ols)$adj.r.squared,
+    summary(mod_fe_tw)$r.squared[["adjrsq"]],
+    summary(mod_fd)$adj.r.squared,
+    NA, NA, NA, NA
+  ),
+  LogLik = c(
+    logLik(mod_ols)[1],
+    NA,
+    logLik(mod_fd)[1],
+    mod_sar$LL,
+    mod_sem$LL,
+    mod_sac$LL,
+    NA  # SPML logLik not compatible with logLik()
+  ),
+  AIC = c(
+    AIC(mod_ols),
+    NA,
+    AIC(mod_fd),
+    AIC(mod_sar),
+    AIC(mod_sem),
+    AIC(mod_sac),
+    NA
+  ),
+  BIC = c(
+    BIC(mod_ols),
+    NA,
+    BIC(mod_fd),
+    BIC(mod_sar),
+    BIC(mod_sem),
+    BIC(mod_sac),
+    NA  # BIC not available for SPML
+  ),
+  Rho = c(
+    NA, NA, NA,
+    mod_sar$rho,
+    NA,
+    mod_sac$rho,
+    mod_spml_sarar$coefficients[2]  # typically rho
+  ),
+  Lambda = c(
+    NA, NA, NA,
+    NA,
+    mod_sem$lambda,
+    mod_sac$lambda,
+    mod_spml_sarar$coefficients[1]  # typically lambda
+  )
+)
+
+# Display fit statistics table
+fit_stats %>%
+  mutate(across(where(is.numeric), ~ round(.x, 4))) %>%
+  gt() %>%
+  tab_header(title = "Model Fit Statistics")
+```
