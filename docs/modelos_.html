@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Barcelona Regressions</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="modelos__files/libs/clipboard/clipboard.min.js"></script>
+<script src="modelos__files/libs/quarto-html/quarto.js"></script>
+<script src="modelos__files/libs/quarto-html/popper.min.js"></script>
+<script src="modelos__files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="modelos__files/libs/quarto-html/anchor.min.js"></script>
+<link href="modelos__files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="modelos__files/libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="modelos__files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="modelos__files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="modelos__files/libs/bootstrap/bootstrap-973236bd072d72a04ee9cd82dcc9cb29.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Barcelona Regressions</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="quarto-notebook-modeling-the-electoral-impact-of-superblocks" class="level3">
+<h3 class="anchored" data-anchor-id="quarto-notebook-modeling-the-electoral-impact-of-superblocks">Quarto Notebook: Modeling the Electoral Impact of Superblocks</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load required libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({<span class="fu">library</span>(tidyverse)   <span class="co"># For data manipulation</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)          <span class="co"># For spatial data handling</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plm)         <span class="co"># Panel data models</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AER)         <span class="co"># Instrumental variables (not used yet)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stargazer)   <span class="co"># Regression tables</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spdep)       <span class="co"># Spatial dependencies</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spatialreg)  <span class="co"># Spatial regression models</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(splm)        <span class="co"># Spatial panel models</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)        <span class="co"># Optional: mixed models if needed</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom) })      <span class="co"># Tidy model summaries</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-1-read-and-prepare-data" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-read-and-prepare-data">Step 1: Read and Prepare Data</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read spatial tracts and modeling dataset</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>tracts <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"/Users/jaime/IDrive-Sync/Work/UAB/Research/Proyectos/atrapa/Data/Tracts.rds"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"/Users/jaime/IDrive-Sync/Work/UAB/Research/Proyectos/atrapa/Data/Models_data.rds"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare modeling dataset</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>mod_data <span class="ot">&lt;-</span> raw_data <span class="sc">%&gt;%</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Year =</span> <span class="fu">as.factor</span>(Year), </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">GEOID =</span> <span class="fu">as.factor</span>(GEOID), </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">Vote_share =</span> Votes <span class="sc">/</span> Electors)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter for BEC vote in municipal elections in selected years</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>bec_data <span class="ot">&lt;-</span> mod_data <span class="sc">%&gt;%</span> </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Political_Party <span class="sc">==</span> <span class="st">"BEC"</span>, </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>         Election <span class="sc">==</span> <span class="st">"Municipal"</span>, </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>         Year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"2015"</span>, <span class="st">"2019"</span>, <span class="st">"2023"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-2-ols-model-pooled-cross-section" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-ols-model-pooled-cross-section">Step 2: OLS Model (Pooled Cross-Section)</h2>
+<p>This model estimates the relationship between the presence of a Superblock and vote share using a standard linear regression. It includes year dummies to control for time effects but does not account for unobserved spatial heterogeneity.</p>
+<p><strong>Model formula:</strong> <span class="math display">\[\text{VoteShare}_{it} = \alpha + \beta_1 \text{Superblock}_{it} + \beta_2 \text{Year}_t + \beta_3 X_{it} + \varepsilon_{it}\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mod_ols <span class="ot">&lt;-</span> <span class="fu">lm</span>(Vote_share <span class="sc">~</span> Superblock <span class="sc">+</span> Year <span class="sc">+</span> Pop_den <span class="sc">+</span> Income, <span class="at">data =</span> bec_data)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_ols)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-3-two-way-fixed-effects-model" class="level2">
+<h2 class="anchored" data-anchor-id="step-3-two-way-fixed-effects-model">Step 3: Two-way Fixed Effects Model</h2>
+<p>This model estimates the effect of Superblocks on vote share while <strong>controlling for two types of confounding influences</strong>:</p>
+<ol type="1">
+<li><strong>Time-invariant differences across spatial units</strong> (i.e., across census tracts), such as:
+<ul>
+<li>Long-standing political preferences</li>
+<li>Historical infrastructure</li>
+<li>Demographic composition that does not change over time</li>
+</ul></li>
+<li><strong>Year-specific effects</strong> that affect <strong>all tracts</strong> in the same way, such as:
+<ul>
+<li>National political events</li>
+<li>Macroeconomic shocks</li>
+<li>Media coverage in a given election cycle</li>
+</ul></li>
+</ol>
+<p>These are known as <strong>unit fixed effects</strong> <span class="math inline">\(\alpha_i\)</span> and <strong>time fixed effects</strong> <span class="math inline">\(\delta_t\)</span>, respectively.</p>
+<hr>
+<section id="what-this-model-does" class="level3">
+<h3 class="anchored" data-anchor-id="what-this-model-does">What this model does</h3>
+<p>The model applies what’s called the <strong>within transformation</strong>, which subtracts the average value of each variable for:</p>
+<ul>
+<li>Each tract (across all time periods)</li>
+<li>Each year (across all tracts)</li>
+</ul>
+<p>This transformation ensures that we are analyzing only the <strong>variation within each tract over time</strong>, after removing both time-invariant differences between tracts and shared year-to-year trends.</p>
+<blockquote class="blockquote">
+<p>In other words, it asks:<br>
+“<em>Did vote share in a given tract increase more than usual <strong>after</strong> a Superblock was implemented — above and beyond that tract’s own baseline and the general trend that year?</em>”</p>
+</blockquote>
+<hr>
+</section>
+<section id="model-formula-two-way-fixed-effects" class="level3">
+<h3 class="anchored" data-anchor-id="model-formula-two-way-fixed-effects">Model formula (Two-Way Fixed Effects):</h3>
+<p><span class="math display">\[
+\text{VoteShare}_{it} = \alpha_i + \delta_t + \beta \cdot \text{Superblock}_{it} + \gamma \cdot X_{it} + \varepsilon_{it}
+\]</span></p>
+<p>Where:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\alpha_i &amp;:\ \text{tract (unit) fixed effects} \\
+\delta_t &amp;:\ \text{year (time) fixed effects} \\
+\text{Superblock}_{it} &amp;:\ \text{treatment variable} \\
+X_{it} &amp;:\ \text{control variables (e.g., population density, income)} \\
+\varepsilon_{it} &amp;:\ \text{error term}
+\end{aligned}
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pdata <span class="ot">&lt;-</span> <span class="fu">pdata.frame</span>(bec_data, <span class="at">index =</span> <span class="fu">c</span>(<span class="st">"GEOID"</span>, <span class="st">"Year"</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>mod_fe_tw <span class="ot">&lt;-</span> <span class="fu">plm</span>(Vote_share <span class="sc">~</span> Superblock <span class="sc">+</span> Pop_den <span class="sc">+</span> Income, </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> pdata, <span class="at">model =</span> <span class="st">"within"</span>, <span class="at">effect =</span> <span class="st">"twoways"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_fe_tw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="step-4-first-difference-model" class="level2">
+<h2 class="anchored" data-anchor-id="step-4-first-difference-model">Step 4: First-Difference Model</h2>
+<p>The <strong>first-difference model</strong> is another method used to estimate the effect of Superblocks on vote share. Like the fixed effects model, it aims to eliminate <strong>time-invariant confounding factors</strong> — characteristics of a place that don’t change over time and might bias the results.</p>
+<p>But instead of subtracting the average (as in fixed effects), this model <strong>subtracts the previous year’s value from the current year’s value</strong> for each variable. In other words, it focuses on <strong>how things changed</strong> from one election to the next within each census tract.</p>
+<hr>
+<section id="why-use-this-model" class="level3">
+<h3 class="anchored" data-anchor-id="why-use-this-model">Why use this model?</h3>
+<p>By differencing the data, we remove any characteristics of each tract that stay constant over time — such as:</p>
+<ul>
+<li>Geographic location</li>
+<li>Long-term political alignment</li>
+<li>Fixed infrastructure or urban design</li>
+</ul>
+<p>This is similar in goal to the fixed effects model but uses a simpler transformation.</p>
+<hr>
+</section>
+<section id="strengths-and-limitations" class="level3">
+<h3 class="anchored" data-anchor-id="strengths-and-limitations">Strengths and Limitations</h3>
+<p><strong>Strengths:</strong></p>
+<ul>
+<li>Very intuitive: it looks at <strong>changes over time</strong>, not levels.</li>
+<li>Eliminates all time-invariant bias automatically.</li>
+</ul>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li>It can be <strong>more sensitive to noise</strong> or random variation between years.</li>
+<li>If the treatment effect builds gradually over time, differencing might <strong>miss</strong> longer-term effects.</li>
+<li>It only works when you have <strong>at least two time points per unit</strong>.</li>
+</ul>
+<p>In your case (three time points: 2015, 2019, 2023), the model uses <strong>two change periods</strong>:<br>
+one from 2015–2019 and one from 2019–2023.</p>
+<hr>
+</section>
+<section id="model-formula-first-difference" class="level3">
+<h3 class="anchored" data-anchor-id="model-formula-first-difference">Model formula (First-Difference):</h3>
+<p><span class="math display">\[
+\Delta \text{VoteShare}_{it} = \beta \cdot \Delta \text{Superblock}_{it} + \gamma \cdot \Delta X_{it} + \Delta \varepsilon_{it}
+\]</span></p>
+<p>Where:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\Delta \text{VoteShare}_{it} &amp;:\ \text{Change in vote share from the previous election} \\
+\Delta \text{Superblock}_{it} &amp;:\ \text{Change in Superblock status (e.g., newly implemented)} \\
+\Delta X_{it} &amp;:\ \text{Change in control variables (e.g., population density, income)} \\
+\Delta \varepsilon_{it} &amp;:\ \text{Change in unobserved factors or shocks}
+\end{aligned}
+\]</span> —</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fd_data <span class="ot">&lt;-</span> bec_data <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(GEOID, Year) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(GEOID) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">d_Vote =</span> Vote_share <span class="sc">-</span> <span class="fu">lag</span>(Vote_share),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">d_Superblock =</span> Superblock <span class="sc">-</span> <span class="fu">lag</span>(Superblock),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">d_Pop_den =</span> Pop_den <span class="sc">-</span> <span class="fu">lag</span>(Pop_den),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">d_Income =</span> Income <span class="sc">-</span> <span class="fu">lag</span>(Income),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Period =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      Year <span class="sc">==</span> <span class="dv">2019</span> <span class="sc">~</span> <span class="st">"2015-2019"</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      Year <span class="sc">==</span> <span class="dv">2023</span> <span class="sc">~</span> <span class="st">"2019-2023"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(d_Vote)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>mod_fd <span class="ot">&lt;-</span> <span class="fu">lm</span>(d_Vote <span class="sc">~</span> d_Superblock <span class="sc">+</span> d_Pop_den <span class="sc">+</span> d_Income <span class="sc">+</span> Period, <span class="at">data =</span> fd_data)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_fd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="step-5-build-spatial-weights" class="level2">
+<h2 class="anchored" data-anchor-id="step-5-build-spatial-weights">Step 5: Build Spatial Weights</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>tracts <span class="ot">&lt;-</span> tracts <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(GEOID)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>bec_data <span class="ot">&lt;-</span> <span class="fu">left_join</span>(tracts, bec_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>geometry))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>nb <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(tracts)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>mat <span class="ot">&lt;-</span> <span class="fu">nb2mat</span>(nb)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>unique_codigo <span class="ot">&lt;-</span> <span class="fu">unique</span>(tracts<span class="sc">$</span>GEOID)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(mat) <span class="ot">&lt;-</span> unique_codigo</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(mat) <span class="ot">&lt;-</span> unique_codigo</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>listW <span class="ot">&lt;-</span> <span class="fu">mat2listw</span>(mat, <span class="at">style =</span> <span class="st">"W"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-6-create-density-measures" class="level2">
+<h2 class="anchored" data-anchor-id="step-6-create-density-measures">Step 6: Create Density Measures</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mod_data <span class="ot">&lt;-</span> mod_data <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Area =</span> <span class="fu">as.numeric</span>(<span class="fu">st_area</span>(.)) <span class="sc">/</span> <span class="fl">1e6</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">cycleway_length_density =</span> cycleway_length <span class="sc">/</span> (<span class="dv">1000</span> <span class="sc">*</span> Area),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">pedestrian_length_density =</span> pedestrian_length <span class="sc">/</span> (<span class="dv">1000</span> <span class="sc">*</span> Area),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">livingstreet_length_density =</span> livingstreet_length <span class="sc">/</span> (<span class="dv">1000</span> <span class="sc">*</span> Area))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>mod_data[<span class="fu">is.na</span>(mod_data)] <span class="ot">&lt;-</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-7-spatial-cross-sectional-models" class="level2">
+<h2 class="anchored" data-anchor-id="step-7-spatial-cross-sectional-models">Step 7: Spatial Cross-Sectional Models</h2>
+<p>Traditional regression models assume that each observation (e.g., each census tract) is independent of the others. But in spatial data, this assumption often fails: what happens in one area may influence — or be influenced by — neighboring areas.</p>
+<p>For example:</p>
+<ul>
+<li>Voters may be influenced by campaign activities or media exposure from nearby districts.</li>
+<li>Infrastructure improvements in one neighborhood can spill over into others.</li>
+<li>Unobserved factors like political networks or local culture may be spatially clustered.</li>
+</ul>
+<p>To address this, spatial regression models account for <strong>spatial dependence</strong> — the idea that observations located near one another may be statistically related.</p>
+<hr>
+<section id="spatial-lag-model-sar" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-lag-model-sar">Spatial Lag Model (SAR)</h3>
+<p>The SAR model assumes that the <strong>vote share in one tract depends on the vote share in neighboring tracts</strong>. This reflects spatial spillovers in the outcome.</p>
+<p><span class="math display">\[
+y = \rho W y + X\beta + \varepsilon
+\]</span></p>
+<p>Where:</p>
+<p><span class="math display">\[
+\begin{aligned}
+y &amp;: \text{Vector of vote shares} \\
+\rho &amp;: \text{Spatial lag coefficient (strength of spillover)} \\
+W &amp;: \text{Spatial weights matrix (defines neighbors)} \\
+X\beta &amp;: \text{Linear combination of covariates (e.g., Superblock, controls)} \\
+\varepsilon &amp;: \text{Uncorrelated error term}
+\end{aligned}
+\]</span></p>
+<hr>
+</section>
+<section id="spatial-error-model-sem" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-error-model-sem">Spatial Error Model (SEM)</h3>
+<p>The SEM model assumes that <strong>unobserved factors influencing vote share are spatially correlated</strong> — even if vote shares themselves don’t directly influence each other.</p>
+<p><span class="math display">\[
+y = X\beta + u,\quad u = \lambda W u + \varepsilon
+\]</span></p>
+<p>Where:</p>
+<p><span class="math display">\[
+\begin{aligned}
+u &amp;: \text{Spatially correlated error component} \\
+\lambda &amp;: \text{Spatial autocorrelation in the error} \\
+\varepsilon &amp;: \text{Independent random noise}
+\end{aligned}
+\]</span></p>
+<hr>
+</section>
+<section id="spatial-autoregressive-combined-model-sac" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-autoregressive-combined-model-sac">Spatial Autoregressive Combined Model (SAC)</h3>
+<p>The SAC model combines both spatial lag and spatial error. It assumes that vote share is influenced by neighboring outcomes <strong>and</strong> that <strong>unobserved spatially clustered factors</strong> are present in the residuals.</p>
+<p><span class="math display">\[
+y = \rho W y + X\beta + u,\quad u = \lambda W u + \varepsilon
+\]</span></p>
+<p>Where:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\rho &amp;: \text{Lag effect — how neighbors' outcomes influence own outcome} \\
+\lambda &amp;: \text{Error effect — how unobserved spatial factors are clustered} \\
+W &amp;: \text{Spatial weights matrix used in both components}
+\end{aligned}
+\]</span></p>
+<hr>
+<p>These models are estimated using <strong>pooled cross-sectional data</strong> from 2015, 2019, and 2023, and provide a way to test whether spatial structure alters the estimated impact of Superblocks on BEC vote share.</p>
+<hr>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>listW_panel <span class="ot">&lt;-</span> <span class="fu">listw2mat</span>(listW)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>listW_big <span class="ot">&lt;-</span> <span class="fu">kronecker</span>(<span class="fu">diag</span>(<span class="dv">3</span>), listW_panel)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>listW_big_list <span class="ot">&lt;-</span> <span class="fu">mat2listw</span>(listW_big, <span class="at">style =</span> <span class="st">"W"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>mod_sar <span class="ot">&lt;-</span> <span class="fu">lagsarlm</span>(Vote_share <span class="sc">~</span> Superblock <span class="sc">+</span> Pop_den <span class="sc">+</span> Income <span class="sc">+</span> <span class="fu">factor</span>(Year),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> bec_data, <span class="at">listw =</span> listW_big_list)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>mod_sem <span class="ot">&lt;-</span> <span class="fu">errorsarlm</span>(Vote_share <span class="sc">~</span> Superblock <span class="sc">+</span> Pop_den <span class="sc">+</span> Income <span class="sc">+</span> <span class="fu">factor</span>(Year),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> bec_data, <span class="at">listw =</span> listW_big_list)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>mod_sac <span class="ot">&lt;-</span> <span class="fu">sacsarlm</span>(Vote_share <span class="sc">~</span> Superblock <span class="sc">+</span> Pop_den <span class="sc">+</span> Income <span class="sc">+</span> <span class="fu">factor</span>(Year),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> bec_data, <span class="at">listw =</span> listW_big_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="step-8-spatial-panel-model-sarar" class="level2">
+<h2 class="anchored" data-anchor-id="step-8-spatial-panel-model-sarar">Step 8: Spatial Panel Model (SARAR)</h2>
+<p>This model is the most comprehensive in our analysis. It combines:</p>
+<ul>
+<li><strong>Fixed effects</strong> for each spatial unit (tract) and each year<br>
+</li>
+<li><strong>Spatial lag</strong> of the dependent variable<br>
+</li>
+<li><strong>Spatial correlation in the error term</strong></li>
+</ul>
+<p>In simpler terms, it accounts for the fact that:</p>
+<ul>
+<li>A tract’s vote share may be influenced by the vote share in <strong>neighboring tracts</strong><br>
+</li>
+<li><strong>Unobserved factors</strong> that affect voting may also be <strong>spatially clustered</strong></li>
+<li>And each tract has its own stable, unchanging characteristics, plus all units are affected by <strong>year-specific trends</strong></li>
+</ul>
+<hr>
+<section id="why-use-this-model-1" class="level3">
+<h3 class="anchored" data-anchor-id="why-use-this-model-1">Why use this model?</h3>
+<p>The SARAR panel model is especially useful when:</p>
+<ul>
+<li>Your data includes <strong>both time and space dimensions</strong> (panel data)</li>
+<li>There are reasons to believe in <strong>both spatial spillovers</strong> and <strong>spatially structured unobservables</strong></li>
+<li>You want to control for <strong>unobserved heterogeneity</strong> across units and time, just like in fixed effects</li>
+</ul>
+<hr>
+</section>
+<section id="model-formula-spatial-panel-sarar" class="level3">
+<h3 class="anchored" data-anchor-id="model-formula-spatial-panel-sarar">Model formula (Spatial Panel SARAR):</h3>
+<p><span class="math display">\[
+y_{it} = \rho W y_{it} + X_{it} \beta + u_{it},\quad u_{it} = \lambda W u_{it} + \varepsilon_{it}
+\]</span></p>
+<p>Where:</p>
+<p><span class="math display">\[
+\begin{aligned}
+y_{it} &amp;: \text{Vote share in tract } i \text{ at time } t \\
+\rho &amp;: \text{Spatial lag parameter — influence of neighbors' vote shares} \\
+W &amp;: \text{Spatial weights matrix defining neighbors} \\
+X_{it} &amp;: \text{Matrix of explanatory variables (e.g., Superblock, controls)} \\
+\beta &amp;: \text{Vector of coefficients} \\
+u_{it} &amp;: \text{Spatially correlated unobserved error term} \\
+\lambda &amp;: \text{Spatial autocorrelation in the error structure} \\
+\varepsilon_{it} &amp;: \text{Unstructured random error}
+\end{aligned}
+\]</span></p>
+<hr>
+<p>This model provides the <strong>most robust estimate</strong> of the Superblock effect by combining all the strengths of the previous models:</p>
+<ul>
+<li>Fixed effects (as in FE and FD)</li>
+<li>Spatial spillovers (as in SAR)</li>
+<li>Spatially correlated errors (as in SEM and SAC)</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>bec_panel <span class="ot">&lt;-</span> <span class="fu">pdata.frame</span>(bec_data <span class="sc">%&gt;%</span> <span class="fu">st_drop_geometry</span>(), <span class="at">index =</span> <span class="fu">c</span>(<span class="st">"GEOID"</span>, <span class="st">"Year"</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>mod_spml_sarar <span class="ot">&lt;-</span> <span class="fu">spml</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> Vote_share <span class="sc">~</span> Superblock <span class="sc">+</span> Pop_den <span class="sc">+</span> Income,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> bec_panel,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> <span class="fu">c</span>(<span class="st">"GEOID"</span>, <span class="st">"Year"</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">listw =</span> listW,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">"within"</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">effect =</span> <span class="st">"twoways"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">lag =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">spatial.error =</span> <span class="st">"b"</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">durbin =</span> <span class="cn">FALSE</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_spml_sarar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="load-model-results" class="level2">
+<h2 class="anchored" data-anchor-id="load-model-results">Load Model Results</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mod_ols <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"/Users/jaime/IDrive-Sync/Work/UAB/Research/Proyectos/atrapa/Data/models/mod_ols.rds"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>mod_fe_tw <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"/Users/jaime/IDrive-Sync/Work/UAB/Research/Proyectos/atrapa/Data/models/mod_fe_tw.rds"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>mod_fd <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"/Users/jaime/IDrive-Sync/Work/UAB/Research/Proyectos/atrapa/Data/models/mod_fd.rds"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>mod_sar <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"/Users/jaime/IDrive-Sync/Work/UAB/Research/Proyectos/atrapa/Data/models/mod_sar.rds"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>mod_sem <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"/Users/jaime/IDrive-Sync/Work/UAB/Research/Proyectos/atrapa/Data/models/mod_sem.rds"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>mod_sac <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"/Users/jaime/IDrive-Sync/Work/UAB/Research/Proyectos/atrapa/Data/models/mod_sac.rds"</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>mod_spml_sarar <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"/Users/jaime/IDrive-Sync/Work/UAB/Research/Proyectos/atrapa/Data/models/mod_spml_sarar.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-10-final-table-and-comments" class="level2">
+<h2 class="anchored" data-anchor-id="step-10-final-table-and-comments">Step 10: Final Table and Comments</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine all model results using broom</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract coefficient table</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">&lt;-</span> <span class="fu">coef</span>(mod_spml_sarar)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcov</span>(mod_spml_sarar)))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>t_stat <span class="ot">&lt;-</span> coefs <span class="sc">/</span> se</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>p_val <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(t_stat)))  <span class="co"># Normal approximation</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to tibble</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>tidy_spml_sarar <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="fu">names</span>(coefs),</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> coefs,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">std.error =</span> se,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">statistic =</span> t_stat,</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">p.value =</span> p_val,</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">"SPML-SARAR"</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>model_summaries <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(mod_ols) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"OLS"</span>),</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(mod_fe_tw) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"Two-Way FE"</span>),</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(mod_fd) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"First Diff"</span>),</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(mod_sar) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"SAR"</span>),</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(mod_sem) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"SEM"</span>),</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>(mod_sac) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"SAC"</span>),</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>  tidy_spml_sarar</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter for Superblock term(s) only and display in table</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>model_summary_table <span class="ot">&lt;-</span> model_summaries <span class="sc">%&gt;%</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(term, <span class="st">"Superblock"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(model, term, estimate, std.error, statistic, p.value) <span class="sc">%&gt;%</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(model)</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(model_summary_table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 6
+  model      term         estimate std.error statistic  p.value
+  &lt;chr&gt;      &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 First Diff d_Superblock  0.0175   0.00950       1.84 6.54e- 2
+2 OLS        Superblock    0.0338   0.00356       9.50 3.82e-21
+3 SAC        Superblock1   0.0146   0.00215       6.82 9.41e-12
+4 SAR        Superblock1   0.0222   0.00286       7.77 7.99e-15
+5 SEM        Superblock1   0.0220   0.00308       7.15 8.48e-13
+6 SPML-SARAR Superblock1   0.00411  0.000871      4.72 2.34e- 6
+7 Two-Way FE Superblock    0.0220   0.00305       7.22 7.21e-13</code></pre>
+</div>
+</div>
+<section id="interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation">Interpretation:</h3>
+<ul>
+<li>The <code>Superblock</code> effect is <strong>positive and statistically significant</strong> across most models.</li>
+<li>The effect is largest in the naive OLS model and shrinks in more rigorous specifications.</li>
+<li>The spatial panel SARAR model offers a <strong>conservative and robust estimate</strong>, suggesting the effect is real but modest after controlling for all spatial and fixed effects.</li>
+<li>This robustness across modeling strategies adds credibility to the finding.</li>
+</ul>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
