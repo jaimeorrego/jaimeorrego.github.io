@@ -88,27 +88,27 @@ format:
 
 `2024` **J. Orrego Oñate** and O. Marquet. Urban Density and Mode Selection: The Interplay Between Calculated and Perceived Accessibility. Presented at *Proximity Planning International Congress, Madrid, Spain*. June, 2024.
 
-`2023` **J. Orrego Oñate**, MB. Fernández Nuñez, and O. Marquet. Diminishing returns of additional active travel infrastructure? Evaluating Barcelona's Decade of Sustainable Transportation Progress. Presented at *9th EUGEO Congress, Barcelona, Spain*. September, 2023.
+`2023` **J. Orrego Oñate**, MB. Fernández Nuñez, and O. Marquet. [Diminishing returns of additional active travel infrastructure? Evaluating Barcelona's Decade of Sustainable Transportation Progress](pdfs/2023_1.pdf). Presented at *9th EUGEO Congress, Barcelona, Spain*. September, 2023.
 
-`2021` **J. Orrego Oñate**, K.J. Clifton, and R. Hurtubia. Spatial segmentation of mode choice behavior: a latent class approach based on accessibility and the built environment. Presented at *World Symposium on Transport and Land Use Research. Portland, OR (online)*. September, 2021.
+`2021` **J. Orrego Oñate**, K.J. Clifton, and R. Hurtubia. [Spatial segmentation of mode choice behavior: a latent class approach based on accessibility and the built environment](pdfs/2021_1.pdf). Presented at *World Symposium on Transport and Land Use Research. Portland, OR (online)*. September, 2021.
 
-`2020` **J. Orrego Oñate** and K.J. Clifton. Nonlinearities in the relationship between the built environment and metropolitan structure with automobile and walking modal share. Presented at *the 99th Annual Meeting of the Transportation Research Board, Washington, D.C.* January, 2020.
+`2020` **J. Orrego Oñate** and K.J. Clifton. [Nonlinearities in the relationship between the built environment and metropolitan structure with automobile and walking modal share](pdfs/2020_1.pdf). Presented at *the 99th Annual Meeting of the Transportation Research Board, Washington, D.C.* January, 2020.
 
-`2019` Q. Zhang, K.J. Clifton, R. Moeckel, and **J. Orrego Oñate**. Household Trip Generation and the Built Environment: Does More Density Mean More Trips? Presented at the *98th Annual Meeting of the Transportation Research Board, Washington, D.C.*. January, 2019.
+`2019` Q. Zhang, K.J. Clifton, R. Moeckel, and **J. Orrego Oñate**. [Household Trip Generation and the Built Environment: Does More Density Mean More Trips?](pdfs/2019_1.pdf) Presented at the *98th Annual Meeting of the Transportation Research Board, Washington, D.C.*. January, 2019.
 
-`2018` **J. Orrego Oñate** and K.J. Clifton. Exploring built environment relationships with walking between and within metropolitan areas. Presented at the *19th International Conference on Walking and Liveable Communities WALK21, Bogotá, Colombia*. October, 2018.
+`2018` **J. Orrego Oñate** and K.J. Clifton. [Exploring built environment relationships with walking between and within metropolitan areas](pdfs/2018_3.pdf). Presented at the *19th International Conference on Walking and Liveable Communities WALK21, Bogotá, Colombia*. October, 2018.
 
-**J. Orrego Oñate**, K. Clifton, P. Singleton, and R. Schneider. An exploration of the inter- and intra-regional relationships between the built environment and walking. Presented at the *15th International Conference on Travel Behavior and Research, Santa Barbara, CA*. July, 2018.
+**J. Orrego Oñate**, K. Clifton, P. Singleton, and R. Schneider. [An exploration of the inter- and intra-regional relationships between the built environment and walking](pdfs/2018_2.pdf). Presented at the *15th International Conference on Travel Behavior and Research, Santa Barbara, CA*. July, 2018.
 
-**J. Orrego Oñate**, P. Singleton, J. Totten, R. Schneider, and K. Clifton. Density differences: Exploring Built Environment Relationships with Walking Between and Within Metropolitan Areas. Presented at the *97th Annual Meeting of the Transportation Research Board, Washington, D.C.*. January, 2018
+**J. Orrego Oñate**, P. Singleton, J. Totten, R. Schneider, and K. Clifton. [Density differences: Exploring Built Environment Relationships with Walking Between and Within Metropolitan Areas](pdfs/2018_1.pdf). Presented at the *97th Annual Meeting of the Transportation Research Board, Washington, D.C.*. January, 2018
 
-`2017` **J. Orrego Oñate**, P. Singleton, J. Totten, R. Schneider, and K. Clifton. Transferring the Pedestrian Index of the Environment. Presented at the *57th ACSP Annual Meeting, Denver, CO.* October, 2017
+`2017` **J. Orrego Oñate**, P. Singleton, J. Totten, R. Schneider, and K. Clifton. [Transferring the Pedestrian Index of the Environment](pdfs/2017_3.pdf). Presented at the *57th ACSP Annual Meeting, Denver, CO.* October, 2017
 
-**J. Orrego Oñate**, P. Singleton, J. Totten, R. Schneider, and K. Clifton. Analyzing the relationship of walking and the built environment. Presented at the *9th Annual Transportation and Communities Summit, Portland, OR.* September, 2017
+**J. Orrego Oñate**, P. Singleton, J. Totten, R. Schneider, and K. Clifton. [Analyzing the relationship of walking and the built environment](pdfs/2017_2.pdf). Presented at the *9th Annual Transportation and Communities Summit, Portland, OR.* September, 2017
 
-P.A. Singleton, K.J. Clifton , J. Totten, and **J. Orrego Oñate**. Assessing the transferability of the Pedestrian Index of the Environment (PIE) walkability measure for pedestrian modeling. Presented at the *16th Transportation Research Board National Transportation Planning Applications Conference, Raleigh, NC*. May, 2017
+P.A. Singleton, K.J. Clifton , J. Totten, and **J. Orrego Oñate**. [Assessing the transferability of the Pedestrian Index of the Environment (PIE) walkability measure for pedestrian modeling](pdfs/2017_1.pdf). Presented at the *16th Transportation Research Board National Transportation Planning Applications Conference, Raleigh, NC*. May, 2017
 
-`2013` L.J. Basso, C.E. Cortés, **J. Orrego Oñate**. Funciones de Congestión en Corredores Segregados de Buses usando Microsimulación. Presented at the *XVI Congreso Chileno de Ingeniería de Transporte, Santiago, Chile*. August, 2013
+`2013` L.J. Basso, C.E. Cortés, **J. Orrego Oñate**. [Funciones de Congestión en Corredores Segregados de Buses usando Microsimulación](pdfs/2013_1.pdf). Presented at the *XVI Congreso Chileno de Ingeniería de Transporte, Santiago, Chile*. August, 2013
 
 ### Workshops
 
