@@ -1,0 +1,242 @@
+---
+title: "Spatiotemporal Patterns of Travel Behavior in King County"
+author: "Jaime Orrego"
+format: html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  echo = TRUE,
+  fig.align = "center"
+)
+```
+
+This analysis uses data from the Puget Sound Regional Household Travel Survey for the years 2017, 2019, and 2023. The 2021 wave was excluded due to pandemic-related anomalies. The aim is to examine shifts in trip patterns, across time and space.
+
+We also use local accessibility measures obtained from the American Community Survey via the `tidycensus` package and from LODES database, aggregated at the census tract level for the three years. These variables include:
+
+-   **Median income** (`median_income`, B19013_001)
+-   **Unemployed population** (`unemployed`, B23025_005)
+-   **Labor force population** (`labor_force`, B23025_003)
+-   **Population with Bachelor's degree or higher** (`bachelors_or_higher`, B15003_022)
+-   **Population age 25+** (`pop_25_plus`, B15003_001)
+-   **Median age** (`med_age`, B01002_001)
+-   **Population below poverty line** (`below_poverty`, B17001_002)
+-   **Jobs density** (`Jobs_den`) from LODES
+-   **Population densiy** (`Pop_den`,B01003_001)
+
+Transit accessibility data was calculated by generating 30-minute isochrones using GTFS data for 8:30 AM on the last Wednesday of April for each year (2017, 2019, 2023). From each census tract centroid, the number of jobs and population reachable within 30 minutes by transit were counted (`Jobs_in_30min`, `Population_in_30min`).
+
+To ensure robustness in trip rate estimates, we created larger spatial clusters using the Max-p regionalization algorithm. These clusters aggregate adjacent census tracts with similar characteristics and a minimum number of households.
+
+We then joined the clusters to the travel survey trip records and computed average trip rates per cluster and year. Finally, we modeled trip rates (e.g., for errands, shopping, work, study) as a function of time and accessibility indicators using Year as panel fixed effects.
+
+## Load Required Libraries
+
+```{r}
+library(tidyverse)      # Data manipulation and visualization
+library(mapview)        # Interactive mapping
+library(sf)             # Spatial data support
+library(tidycensus)     # Downloading ACS data
+```
+
+## Load Household and Accessibility Data
+
+```{r}
+# Load household-level survey responses
+hh <- read_csv("/Users/jaime/IDrive-Sync/Work/UAB/Research/Nectar_Lisbon/Data/Household_Travel_Survey_Households.csv") %>% 
+  select(household_id, hh_weight, home_tract20)
+
+# Load accessibility data and attach year
+transit_accessibility <- bind_rows(
+  read_rds("/Users/jaime/IDrive-Sync/Work/UAB/Research/Nectar_Lisbon/Data/be_2023.rds") %>% mutate(Year = 2023),
+  read_rds("/Users/jaime/IDrive-Sync/Work/UAB/Research/Nectar_Lisbon/Data/be_2019.rds") %>% mutate(Year = 2019),
+  read_rds("/Users/jaime/IDrive-Sync/Work/UAB/Research/Nectar_Lisbon/Data/be_2017.rds") %>% mutate(Year = 2017)
+)
+
+# Load local built environment measures (density etc.)
+local_measures <- read_rds("/Users/jaime/IDrive-Sync/Work/UAB/Research/Nectar_Lisbon/Data/local_measures.rds")
+```
+
+## Household Counts per Tract-Year
+
+This count will serve to allocate a minimum of household in each cluster using the max-p regionalization method.
+
+```{r}
+# Join year to each household using trip file
+# Load trip-level data and categorize purpose/time of day
+trips <- read_csv("/Users/jaime/IDrive-Sync/Work/UAB/Research/Nectar_Lisbon/Data/Household_Travel_Survey_Trips_-7221806773183684102.csv") %>%
+  mutate(Time_of_day = case_when(
+    depart_time_hour < 12 ~ "Morning",
+    depart_time_hour < 16 ~ "Midday",
+    TRUE ~ "Evening"
+  )) %>% 
+  mutate(origin_tract20 = as.character(origin_tract20))
+
+# Load destination purpose categories and merge
+dest_purp <- read_csv("/Users/jaime/IDrive-Sync/Work/UAB/Research/Nectar_Lisbon/dest_purp.csv")
+trips <- left_join(trips, dest_purp) %>% drop_na(dest_cat)
+hh_count <- left_join(
+  hh,
+  trips %>% select(household_id, survey_year) %>% distinct()
+) %>% 
+  mutate(home_tract20 = as.character(home_tract20)) %>% 
+  group_by(home_tract20, survey_year) %>% 
+  count()
+```
+
+## Join Accessibility and Built Environment Measures
+
+```{r}
+# Merge 2023 measures and household counts by tract
+regions <- left_join(
+  left_join(
+    transit_accessibility %>% filter(Year == 2023) %>% 
+      rename(Jobs_in_30min = Jobs, Population_in_30min = Population),
+    local_measures %>% filter(Year == 2023)
+  ),
+  hh_count %>% 
+    ungroup() %>% 
+    filter(survey_year == 2023) %>% 
+    rename(GEOID = home_tract20) %>% 
+    mutate(GEOID = as.character(GEOID))
+)
+
+# Replace missing household counts with 0
+regions$n[is.na(regions$n)] <- 0
+regions$survey_year[is.na(regions$survey_year)] <- 2023
+```
+
+## Join with Tract Geometry
+
+```{r}
+# Load 2023 census tract geometry (already cleaned of water)
+geom_2023 <- read_rds("/Users/jaime/IDrive-Sync/Work/UAB/Research/Nectar_Lisbon/Data/geom_wo_water_2023.rds")
+
+# Merge with region data for mapping
+regions <- left_join(geom_2023, regions %>% st_drop_geometry())
+```
+
+## Run Spatial Clustering with Max-P Algorithm
+
+```{r}
+library(rgeoda)
+
+# Create spatial weights
+queen_w <- queen_weights(regions)
+
+# Select variables and minimum size for regions (e.g., 150 households)
+data1 <- regions[c("Jobs_in_30min", "Population_in_30min", "Pop_den", "Job_den", "poverty_den", "median_income")]
+bound_variable <- regions['n']
+min_bound <- 150
+
+# Run max-p clustering
+maxp_clusters <- maxp_greedy(queen_w, data1, bound_variable, min_bound, iterations = 99)
+regions$Clusters <- maxp_clusters$Clusters
+```
+
+## Aggregate Built Environment Variables by Cluster-Year
+
+```{r}
+measures <- left_join(
+  transit_accessibility %>% rename(Jobs_in_30min = Jobs, Population_in_30min = Population) %>% st_drop_geometry(),
+  local_measures
+)
+
+new_regions <- left_join(regions %>% select(GEOID, Clusters), measures)
+
+# Aggregate measures per cluster-year
+new_regions <- new_regions %>% 
+  group_by(Clusters, Year) %>% 
+  summarise(
+    geometry = st_union(geometry),
+    Population_in_30min = weighted.mean(Population_in_30min, Area),
+    Jobs_in_30min = weighted.mean(Jobs_in_30min, Area),
+    Pop_den = weighted.mean(Pop_den, Population),
+    Jobs_den = weighted.mean(Job_den, Jobs),
+    bachelors_den = weighted.mean(bachelors_den, Population),
+    poverty_den = weighted.mean(poverty_den, Population),
+    unemployed_den = weighted.mean(unemployed_den, Population),
+    median_income = weighted.mean(median_income, Population),
+    med_age = weighted.mean(med_age, Population)
+  )
+```
+
+## Prepare Travel Survey Data
+
+```{r}
+# Load trip-level data and categorize purpose/time of day
+trips <- read_csv("/Users/jaime/IDrive-Sync/Work/UAB/Research/Nectar_Lisbon/Data/Household_Travel_Survey_Trips_-7221806773183684102.csv") %>%
+  mutate(Time_of_day = case_when(
+    depart_time_hour < 12 ~ "Morning",
+    depart_time_hour < 16 ~ "Midday",
+    TRUE ~ "Evening"
+  )) %>% 
+  mutate(origin_tract20 = as.character(origin_tract20))
+
+# Load destination purpose categories and merge
+dest_purp <- read_csv("/Users/jaime/IDrive-Sync/Work/UAB/Research/Nectar_Lisbon/dest_purp.csv")
+trips <- left_join(trips, dest_purp) %>% drop_na(dest_cat)
+
+# Join household and cluster info
+trips <- left_join(trips, hh)
+trips <- left_join(
+  trips %>% rename(GEOID = home_tract20) %>% mutate(GEOID=as.character(GEOID)),
+  regions %>% st_drop_geometry() %>% select(GEOID, Clusters)
+)
+```
+
+## Calculate Trips per Household (per Category-Year-Cluster)
+
+```{r}
+trips <- trips %>% 
+  group_by(dest_cat, survey_year, Clusters) %>% 
+  summarise(
+    Trips = sum(trip_weight, na.rm = TRUE),
+    hh_weight = sum(hh_weight, na.rm = TRUE)
+  ) %>% 
+  mutate(rates = Trips / hh_weight)
+```
+
+## Prepare Panel Data with Lagged Variables
+
+```{r}
+trips_wide <- trips %>% 
+  ungroup() %>%
+  filter(survey_year %in% c(2017, 2019, 2023)) %>% 
+  select(survey_year, Clusters, dest_cat, rates) %>% 
+  pivot_wider(names_from = dest_cat, values_from = rates, names_prefix = "rate_") %>% 
+  arrange(Clusters, survey_year) %>% 
+  group_by(Clusters) %>% 
+  mutate(across(starts_with("rate_"), ~ dplyr::lag(.), .names = "lag_{.col}")) %>% 
+  ungroup()
+
+# Replace missing with 0
+trips_wide <- trips_wide %>% drop_na(Clusters)
+trips_wide[is.na(trips_wide)] <- 0
+
+# Join back built environment data
+trips_wide <- left_join(trips_wide %>% rename(Year = survey_year), new_regions %>% st_drop_geometry())
+```
+
+## Estimate Linear Models for Trip Categories
+
+```{r}
+mod1 <- lm(data = trips_wide, rate_Errands ~ factor(Year) + Jobs_in_30min)
+summary(mod1)
+
+mod2 <- lm(data = trips_wide, rate_Shopping ~ factor(Year) + med_age + bachelors_den + median_income)
+summary(mod2)
+
+mod3 <- lm(data = trips_wide, rate_Work ~ factor(Year) + med_age + Jobs_in_30min + unemployed_den)
+summary(mod3)
+
+mod4 <- lm(data = trips_wide, rate_Study ~ factor(Year) + med_age)
+summary(mod4)
+```
+
+### Key Findings
+
+Across all models, the **year indicators show consistent and significant declines** in trip rates for errands, shopping, work, and study between 2017 and 2023. These changes likely reflect broader structural shifts in travel behavior—potentially influenced by remote work, online services, or evolving daily routines—rather than local built environment or demographic factors. Most accessibility and socioeconomic variables show **limited or no explanatory power**, suggesting that **temporal dynamics** play a more dominant role than spatial variation in explaining changes in trip purposes.
