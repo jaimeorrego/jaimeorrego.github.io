@@ -88,9 +88,13 @@ format:
 
 ### Conferences
 
-`2024` **J. Orrego Oñate**, E. Martells, and O. Marquet. Travel Behavior Trends in the Peri-Urban and Suburban Areas of Barcelona. Presented at *Urban Transitions 2024*, Sitges, Spain, November 2024.
+`2025` **J. Orrego Oñate**, J. Broach [The Evolving Urban Commute: Understanding Temporal Shifts in Trip Purposes in the Puget Sound region](pdfs/2025_2.pdf). Presented at *Nectar Cluster 6-8 meeting*, Lisbon, Portugal, June 2025.
 
-`2024` **J. Orrego Oñate** and O. Marquet. Urban Density and Mode Selection: The Interplay Between Calculated and Perceived Accessibility. Presented at *Proximity Planning International Congress, Madrid, Spain*. June, 2024.
+`2025` **J. Orrego Oñate**, M.B.F. Núñez, A. Guevara, and O. Marquet. [Superblocks and Electoral Outcomes: Examining Local and Spatial Spillovers in Barcelona](pdfs/2025_1.pdf). Presented at *AESOP 2025*, Istanbul, Turkey, July 2025.
+
+`2024` **J. Orrego Oñate**, E. Martells, and O. Marquet. [Travel Behavior Trends in the Peri-Urban and Suburban Areas of Barcelona](pdfs/2024_2.pdf). Presented at *Urban Transitions 2024*, Sitges, Spain, November 2024.
+
+`2024` **J. Orrego Oñate** and O. Marquet. [Urban Density and Mode Selection: The Interplay Between Calculated and Perceived Accessibility](pdfs/2024_1.pdf). Presented at *Proximity Planning International Congress, Madrid, Spain*. June, 2024.
 
 `2023` **J. Orrego Oñate**, MB. Fernández Nuñez, and O. Marquet. [Diminishing returns of additional active travel infrastructure? Evaluating Barcelona's Decade of Sustainable Transportation Progress](pdfs/2023_1.pdf). Presented at *9th EUGEO Congress, Barcelona, Spain*. September, 2023.
 
@@ -124,11 +128,13 @@ P.A. Singleton, K.J. Clifton , J. Totten, and **J. Orrego Oñate**. [Assessing t
 
 `2025` **J. Orrego Oñate**. Del espacio vial al peatonal: ¿Puede el rediseño urbano fomentar caminar?. *Reflexiones desde Barcelona Movilidad Urbana y Espacio Público – Rompiendo Paradigmas at Instituto de estudios Urbanos y Territoriales*. April, 2025
 
-`2025` **J. Orrego Oñate**. De la Movilidad al Apoyo Electoral: Aceptabilidad de las TransformacionesUrbanas en Barcelona. *Seminario Viernes de Transporte at Civil Engineering Department - Universidad de Chile*. April, 2025
+`2025` **J. Orrego Oñate**. De la Movilidad al Apoyo Electoral: Aceptabilidad de las Transformaciones Urbanas en Barcelona. *Seminario Viernes de Transporte at Civil Engineering Department - Universidad de Chile*. April, 2025
 
 `2018` **J. Orrego Oñate**, P. Singleton, J. Totten, R. Schneider, and K. Clifton. Density differences: Exploring Built Environment Relationships with Walking Between and Within Metropolitan Areas. *Friday Transportation Seminar at Portland State University*. February, 2018
 
 ## Research Grants Participation
+
+`2026-2028` *Driving Urban Transitions 2025. Universitat Autonoma de Barcelona, Barcelona, Spain*. Unlocking Adolescents' Urban Accessibility and Sustainable Mobility Transitioning to Adulthood (HANGOUT). Principal Investigator at UAB.
 
 `2024-2028` *European Research Council (ERC) Starting Grant 2023. Universitat Autonoma de Barceloa, Barcelona, Spain*. ATRAPA: The active travel backlash paradox: opposition and acceptability determinants of built environment-based sustainable travel interventions.
 
@@ -175,6 +181,8 @@ Valparaiso, Chile
 
 ## Assistant Teaching
 
+`2025` *Escuela de Movilidad Sostenible (EMS), Barcelona, Spain* - - Las relaciones entre las infraestructuras y la movilidad en coche. Los estudios de evaporación del tráfico.
+
 `2015` *Department of Architecture, Universidad Católica de Chile, Santiago, Chile* - - Urban transportation workshop
 
 `2014` *Department of Urbanism, Universidad de Chile, Santiago, Chile* - - City and Transportation
@@ -183,7 +191,7 @@ Valparaiso, Chile
 
 ## Referee
 
-`2018-present` **Journals**: *Urban Transitions*, *Case Studies on Transport Policy*, *Urban Planning*, *Environment and Planning B: Urban Analytics and City Science*, *Journal of Transportation and Land Use*, *Transportation Research Board*
+`2018-present` **Journals**: *European Transport Studies, Humanities and Social Sciences Communications, Transportation, Transportation Research A, Journal of Urban Mobility, Urban Sustainability,* *Urban Transitions*, *Case Studies on Transport Policy*, *Urban Planning*, *Environment and Planning B: Urban Analytics and City Science*, *Journal of Transportation and Land Use*, *Transportation Research Board*
 
 ## Languages
 
@@ -193,4 +201,4 @@ Proficiency: English
 
 Basic: Catalan
 
-Last updated: May 2025
+Last updated: April 2026
