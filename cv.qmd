@@ -46,9 +46,9 @@ format:
 
 ### Journals
 
-`2026` **J. Orrego-Oñate**, E. Martells Cortes, and O. Marquet (2026). Stability in the urban center and volatility in the periphery: travel patterns over time in Metropolitan Barcelona. *International Journal of Urban Sciences*, 1-21. doi: <https://doi.org/10.1080/12265934.2026.2636020>
+`2026` **J. Orrego-Oñate**, E. Martells Cortes, and O. Marquet. Stability in the urban center and volatility in the periphery: travel patterns over time in Metropolitan Barcelona. *International Journal of Urban Sciences*, 1-21. doi: <https://doi.org/10.1080/12265934.2026.2636020>
 
-`2026` M. B. F. Núñez, **J. Orrego-Oñate** , M. Triguero-Mas, and O. Marquet (2025). Electoral consequences of Urban interventions: The case of superblocks, school streets, and bike lanes in Barcelona. *Cities*, *165*, 106130. doi: <https://doi.org/10.1016/j.cities.2025.106130>
+`2026` M. B. F. Núñez, **J. Orrego-Oñate** , M. Triguero-Mas, and O. Marquet. Electoral consequences of Urban interventions: The case of superblocks, school streets, and bike lanes in Barcelona. *Cities*, *165*, 106130. doi: <https://doi.org/10.1016/j.cities.2025.106130>
 
 `2025` **J. Orrego-Oñate** and O. Marquet. The role of perceived and objective accessibility in shaping walking behavior: Insights from mid-sized Spanish cities. *Transportation Research Part A: Policy and Practice*, 192, 104340. doi: <https://doi.org/10.1016/j.tra.2024.104340>
 
